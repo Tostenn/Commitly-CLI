@@ -52,4 +52,8 @@ Recommandations spécifiques :
 
 Instruction finale :
 En t'appuyant sur le diff fourni ci-dessus et en tenant compte du format et des recommandations, rédige un message de commit qui réponde parfaitement aux conventions décrites.
+Renvoir uniquement le message de commit. Ne rien ajouter.
+
+
+
 """
