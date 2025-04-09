@@ -61,7 +61,7 @@ def msg_commit(style_commit, format_commit, recommandation_commit):
     print('--------------------')
     
     if commit:
-        cmd = cmds("git commit -m \"" + commit + "\"")
+        cmd = cmds("git commit -m \"" + commit + "\"", True)
         if cmd == 0:
             print("Commit created.")
             if options.push:
