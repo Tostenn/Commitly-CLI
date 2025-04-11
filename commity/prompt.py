@@ -22,8 +22,10 @@ FORMAT_COMMIT = """<type>[étendue optionnelle]: <description>
 
 Exemple :
 feat[frontend]: Ajout de la nouvelle barre de navigation
+
 - Mise à jour du composant Navbar pour améliorer l’accessibilité.
 - Ajustements CSS pour les différents modes responsive.
+
 (#1234 si indiqué)
 """
 
