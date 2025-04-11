@@ -70,3 +70,6 @@ class Commitly:
 
     def push(self):
         self.cmds("git push")
+        
+    def reset(self, file:str):
+        self.cmds("git reset " + file)

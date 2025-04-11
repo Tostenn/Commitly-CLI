@@ -103,6 +103,9 @@ if options.add:
                 if c.lower() != "y":
                     if options.del_temp:
                         commitly.file_temp.unlink()
+                    
+                    if add != '!': commitly.reset(add)
+                    print("Commit cancelled.")
                     exit()
                     
             
