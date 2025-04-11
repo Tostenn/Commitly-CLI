@@ -1,4 +1,4 @@
-from commitly import Commitly
+from commity.commitly import Commitly
 
 commitly = Commitly()
 

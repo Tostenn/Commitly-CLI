@@ -24,7 +24,7 @@ Exemple :
 feat[frontend]: Ajout de la nouvelle barre de navigation
 - Mise à jour du composant Navbar pour améliorer l’accessibilité.
 - Ajustements CSS pour les différents modes responsive.
-#1234
+(#1234 si indiqué)
 """
 
 RECOMMANDATION = """Priorise la clarté et la concision pour faciliter la lecture par les autres membres de l'équipe.

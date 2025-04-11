@@ -1,8 +1,9 @@
 from g4f.client import Client
 from g4f.models import gpt_4o_mini
-from prompt import PROMPT, STYLE_COMMIT, FORMAT_COMMIT, RECOMMANDATION
+from commity.prompt import PROMPT, STYLE_COMMIT, FORMAT_COMMIT, RECOMMANDATION
 from subprocess import run
 from pathlib import Path
+from commity.exceptions.diffEmptyException import DiffEmptyException
 
 class Commitly:
     
@@ -33,6 +34,9 @@ class Commitly:
     def msg_commit(self, style_commit:str=None, format_commit:str=None, recommandation_commit:str=None)-> str:
         
         cmd = self.cmds("git diff --cached")
+        
+        if not cmd.strip():
+            raise DiffEmptyException
         
         response = self.client.chat.completions.create(
         # model="gpt-4o-mini",

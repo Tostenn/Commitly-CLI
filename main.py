@@ -19,7 +19,7 @@ commandes :
 
 from argparse import ArgumentParser
 from pathlib import Path
-from commitly import Commitly, FORMAT_COMMIT, STYLE_COMMIT, RECOMMANDATION
+from commity.commitly import Commitly, FORMAT_COMMIT, STYLE_COMMIT, RECOMMANDATION
 
 
 # Initialize argument parser
