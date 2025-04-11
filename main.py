@@ -83,8 +83,12 @@ if options.add:
             
             msg = commitly.msg_commit(style_commit, format_commit, recommandation_commit)
         else :
-            with open(commitly.file_temp, "r", encoding="utf-8") as f:
-                msg = f.read()
+            try:
+                with open(commitly.file_temp, "r", encoding="utf-8") as f:
+                    msg = f.read()
+            except: 
+                print(f"file {commitly.file_temp} not found.")
+                exit()
         if msg:
             
             save = commitly.save_msg_in_file(msg)
