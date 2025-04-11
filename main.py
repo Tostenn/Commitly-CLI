@@ -36,6 +36,7 @@ parser.add_argument("--show-style", action="store_true", help="Show the style co
 parser.add_argument("--show-recommandation", action="store_true", help="Show the recommandation commit")
 
 parser.add_argument("--comfirm", action="store_true", help="Comfirm the message of the commit")
+parser.add_argument("--path-file-temp", action="store_true", help="Show the path of the temporary file", default="commit.txt")
 parser.add_argument("--del-temp", action="store_true", help="Delete the temporary file")
 parser.add_argument("-c","--continue",dest="continues", action="store_true", help="Continue the commit")
 
@@ -54,7 +55,9 @@ if options.recommandation:
 # Check if the user provided a file to add to the commit
 if options.add:
     
-    commitly = Commitly()
+    commitly = Commitly(
+        file_temp=options.path_file_temp
+    )
     # Add the file to the commit
     add = ', '.join(options.add)
     
