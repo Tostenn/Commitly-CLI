@@ -14,9 +14,9 @@ class Commitly:
     automatically generate a commit message based on the provided diff
     """
     
-    def __init__(self):
+    def __init__(self, model=gpt_3_5_turbo):
         self.client = Client()
-        self.model = gpt_3_5_turbo
+        self.model = model
         pass
     
     def get_value(self, style_commit:str=None, format_commit:str=None, recommandation_commit:str=None):
