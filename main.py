@@ -108,7 +108,7 @@ if options.add:
             
             commitly.commit()
             
-            if options.push: commitly.cmds("git push")
+            if options.push: commitly.push()
         else:
             print("Error generating commit message.")
         

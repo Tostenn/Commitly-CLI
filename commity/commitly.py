@@ -67,3 +67,6 @@ class Commitly:
         cmd = run(cmd,capture_output=True,text=True,shell=True)
         if code: return cmd.returncode
         return cmd.stdout.strip()
+
+    def push(self):
+        self.cmds("git push")
