@@ -17,13 +17,9 @@ commandes :
         
 """
 
-from prompt import PROMPT, STYLE_COMMIT, FORMAT_COMMIT, RECOMMANDATION
 from argparse import ArgumentParser
 from pathlib import Path
-from repertoire import cmds
-from g4f.client import Client
-from g4f import models
-from time import time
+from commitly import Commitly, FORMAT_COMMIT, STYLE_COMMIT, RECOMMANDATION
 
 
 # Initialize argument parser
@@ -37,42 +33,9 @@ parser.add_argument("-p", "--push", action="store_true", help="Push the commit t
 
 parser.add_argument("--show-format", action="store_true", help="Show the format commit")
 parser.add_argument("--show-style", action="store_true", help="Show the style commit")
+parser.add_argument("--show-recommandation", action="store_true", help="Show the recommandation commit")
 
-client = Client()
-model = models.gemini_1_5_flash
 
-def msg_commit(style_commit, format_commit, recommandation_commit):
-    
-    cmd = cmds("git diff --cached")
-    response = client.chat.completions.create(
-    # model="gpt-4o-mini",
-    model=model,
-    messages=[
-        {"role": "system", "content": PROMPT.format(STYLE_COMMIT=style_commit, FORMAT_COMMIT=format_commit, RECOMMANDATION=recommandation_commit) },
-        
-        {"role": "user", "content": cmd}
-    ],
-    web_search=False
-)
-    
-    commit = response.choices[0].message.content
-    print('--------------------')
-    print(commit)
-    print('--------------------')
-    
-    if commit:
-        cmd = cmds(f"""git commit -m "{commit}" """, True)
-        if cmd == 0:
-            print("Commit created.")
-            if options.push:
-                cmd = cmds("git push")
-                if cmd == 0:
-                    print("Commit pushed to remote repository.")
-                else:
-                    print("Error pushing commit to remote repository.")
-        else:
-            print("Error creating commit.")
-    
     
 
 options = parser.parse_args()
@@ -82,36 +45,47 @@ if options.format:
     print(FORMAT_COMMIT)
 if options.style:
     print(STYLE_COMMIT)
+if options.recommandation:
+    print(RECOMMANDATION)
+
 
 # Check if the user provided a file to add to the commit
 if options.add:
+    
+    commitly = Commitly()
     # Add the file to the commit
     add = ', '.join(options.add)
-    cmd = cmds("git add " + add, True) if add != '!' else 0
     
-    if cmd == 0:
+    cmd_status = commitly.add(add) if add != '!' else True
+    
+    if cmd_status:
         print("File added to the commit.")
+        
         # Check if the user provided a commit format file
-        path_format = Path(options.format) if options.format else None
-        path_style = Path(options.style) if options.style else None
-        path_recommandation = Path(options.recommandation) if options.recommandation else None
+        format_commit = Path(options.format) if options.format else None
+        style_commit = Path(options.style) if options.style else None
+        recommandation_commit = Path(options.recommandation) if options.recommandation else None
         
-        if path_style and path_style.exists():
-            style_commit = path_style.read_text().replace("ÿþ", "")
-        else:
-            style_commit = STYLE_COMMIT
+        if style_commit and style_commit.exists():
+            style_commit = style_commit.read_text().replace("ÿþ", "")
             
-        if path_format and path_format.exists():
-            format_commit = path_format.read_text().replace("ÿþ", "")
-        else:
-            format_commit = FORMAT_COMMIT
+        if format_commit and format_commit.exists():
+            format_commit = format_commit.read_text().replace("ÿþ", "")
             
-        if path_recommandation and path_recommandation.exists():
-            recommandation_commit = path_recommandation.read_text().replace("ÿþ", "")
-        else:
-            recommandation_commit = RECOMMANDATION
+        if recommandation_commit and recommandation_commit.exists():
+            recommandation_commit = recommandation_commit.read_text().replace("ÿþ", "")
         
-        msg_commit(style_commit, format_commit, recommandation_commit)
+        msg = commitly.msg_commit(style_commit, format_commit, recommandation_commit)
+        print(msg)
+        
+        if msg:
+            commitly.save_msg_in_file(msg)
+            
+            commitly.commit()
+            
+            if options.push:
+                commitly.cmds("git push")
+        
     else:
         print("Error adding file to the commit.")
 else:

@@ -2,7 +2,7 @@ from commitly import Commitly
 
 commitly = Commitly()
 
-commitly.add("test.py")
+commitly.add(".")
 
 msg = commitly.msg_commit()
 print(msg)
