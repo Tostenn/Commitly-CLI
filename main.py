@@ -1,20 +1,3 @@
-"""
-creer un outil qui genere des message de commit adapter 
-a la structure de ton projet
-
-les commandes git qui me seront utile :
-    git add <file> | pour ajouter un fichier au commit
-    git commit -m "<message>" | pour faire un commit avec un message
-    git push | pour envoyer les commits sur le serveur distant
-
-commandes :
-    main.py --add <file>
-        --commit-style <path_file (txt)> | pour ajouter de recommendations a l'ia
-        --commit-format <path_file (txt)> | pour ajouter de recommendations a l'ia
-        --push | pour envoyer les commits sur le serveur distant
-        --help | pour afficher l'aide
-        
-"""
 
 from argparse import ArgumentParser
 from pathlib import Path
@@ -32,6 +15,7 @@ parser.add_argument("--format", type=str, help="Add a file of format commit")
 parser.add_argument("--style", type=str, help="Add a file of style commit")
 parser.add_argument("-r","--recommandation", type=str, help="Add a file of style commit")
 parser.add_argument("-p", "--push", action="store_true", help="Push the commit to the remote repository")
+parser.add_argument("-t", "--ticket", type=str, help="Add a ticket number to the commit message")
 
 parser.add_argument("--show-format", action="store_true", help="Show the format commit")
 parser.add_argument("--show-style", action="store_true", help="Show the style commit")
@@ -110,7 +94,12 @@ if options.add:
             if recommandation_commit and recommandation_commit.exists():
                 recommandation_commit = recommandation_commit.read_text().replace("ÿþ", "")
             
-            msg = commitly.generate_commit_message(style_commit, format_commit, recommandation_commit)
+            msg = commitly.generate_commit_message(
+                style_commit=style_commit, 
+                format_commit=format_commit,
+                recommandation_commit=recommandation_commit,
+                ticket=options.ticket
+            )
         else :
             try:
                 with open(commitly.file_temp, "r", encoding="utf-8") as f:
