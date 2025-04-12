@@ -19,8 +19,10 @@ commandes :
 from argparse import ArgumentParser
 from pathlib import Path
 from commitly.commitly import Commitly, FORMAT_COMMIT, STYLE_COMMIT, RECOMMANDATION
-from rich import print
-
+from rich.prompt import Prompt
+from rich.console import Console
+from rich.panel import Panel
+from rich.text import Text
 
 # Initialize argument parser
 parser = ArgumentParser(description="Automatically generate a commit message based on the provided diff.")
@@ -40,16 +42,34 @@ parser.add_argument("--path-file-temp", action="store_true", help="Show the path
 parser.add_argument("--del-temp", action="store_true", help="Delete the temporary file")
 parser.add_argument("-c","--continue",dest="continues", action="store_true", help="Continue the commit")
 
-
 options = parser.parse_args()
-# print(options)
 
-if options.format:
-    print(FORMAT_COMMIT)
-if options.style:
-    print(STYLE_COMMIT)
-if options.recommandation:
-    print(RECOMMANDATION)
+console = Console()
+
+if options.show_format or options.show_style or options.show_recommandation:
+    if options.show_format:
+        console.print(
+            Panel.fit(
+                console.render_str(FORMAT_COMMIT),
+                title="Format commit"
+            )
+        )
+    if options.show_style:
+        console.print(
+            Panel.fit(
+                console.render_str(STYLE_COMMIT),
+                title="Style commit"
+            )
+        )
+    if options.show_recommandation:
+        console.print(
+            Panel.fit(
+                console.render_str(RECOMMANDATION),
+                title="Recommandation commit"
+            )
+        )
+        
+    exit()
 
 
 # Check if the user provided a file to add to the commit
@@ -64,7 +84,7 @@ if options.add:
     cmd_status = commitly.add(add) if add != '!' else True
     
     if cmd_status:
-        print("File added to the commit.")
+        console.print("[green]✔️  File added to the commit.[/green]")
         
         if not options.continues:
             # Check if the user provided a commit format file
@@ -87,35 +107,54 @@ if options.add:
                 with open(commitly.file_temp, "r", encoding="utf-8") as f:
                     msg = f.read()
             except: 
-                print(f"file {commitly.file_temp} not found.")
+                console.print(f"file {commitly.file_temp} not found.")
                 exit()
         if msg:
             
+            console.print("[green]✔️  Commit message generated.[/green]")
+            console.print(
+                Panel.fit(
+                    console.render_str(msg),
+                    title="Commit message"
+                )
+            )
+            
             save = commitly.save_message_to_file(msg)
             if not save:
-                print("Error saving commit message.")
+                console.print("[bold red]❌  Error saving commit message. [/bold red]")
                 exit()
                 
             if options.comfirm:
-                print(msg)
-                    
-                c = input("Comfirm the message of the commit (y/n) ? ")
+                c = Prompt.ask(
+                    prompt="Comfirm the message of the commit ? ",
+                    default="y", 
+                    show_default=True,
+                    show_choices=True,
+                    choices=["y", "n"],
+                )
+                
                 if c.lower() != "y":
                     if options.del_temp:
                         commitly.file_temp.unlink()
                     
                     if add != '!': commitly.unstage(add)
-                    print("Commit cancelled.")
+                    
+                    console.print("[bold red]❌  Commit message not comfirmed. [/bold red]")
+                    
                     exit()
                     
             
             commitly.commit()
+            console.print("[green]✔️  Commit message committed.[/green]")
             
-            if options.push: commitly.push()
+            
+            if options.push: 
+                commitly.push()
+                console.print("[green]✔️  Commit message pushed.[/green]")
         else:
-            print("Error generating commit message.")
+            console.print("[bold red]❌  Error generating commit message. [/bold red]")
         
     else:
-        print("Error adding file to the commit.")
+        console.print("[bold red]❌  Error adding file to the commit. [/bold red]")
 else:
-    print("No file provided to add to the commit.")
+    console.print("[bold red]❌  no file provided. [/bold red]")
