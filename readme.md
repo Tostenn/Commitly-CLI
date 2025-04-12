@@ -167,6 +167,35 @@ commitly-cli --add . \
 
 ---
 
+## 🧠 Fun fact : l'outil s’est auto-amélioré ! 🤖
+
+Tu veux une preuve que `commitly-cli` fonctionne ? Ce projet est littéralement **son propre terrain d’entraînement**.
+
+🛠️ Au tout début, **les 2 premiers commits** ont été écrits à la main… à l’ancienne.  
+Mais dès le **3ᵉ commit**, `commitly-cli` a pris le relais.
+
+Et là… 💥  
+Au lieu d’un beau message bien structuré, il a fièrement pondu ça :
+
+```bash
+git commit -m "```"
+```
+
+Oui, tu lis bien : **trois backticks comme message de commit**.  
+Pourquoi ? Parce que dans les données d’exemple, on avait mis `"message de commit ici"`, et notre jeune padawan commitly l’a pris **au pied de la lettre** 🥲
+
+Mais bon… c’était ses débuts ! Depuis, l’outil a appris, s’est amélioré, et maintenant il génère des messages de commit bien plus clairs, utiles, et même élégants.
+
+💬 Tu veux voir son évolution ?  
+> Va jeter un œil à l’historique Git du projet et observe comment `commitly-cli` est passé de 🐣 à 🧙‍♂️ :  
+> [`git log`](https://github.com/Tostenn/commitly-cli/commits/main)
+
+Et oui, aujourd’hui ce projet utilise `commitly-cli` **pour générer ses propres messages de commit**.  
+C’est du **commit-inception**, et c’est beau 😎
+
+---
+
+
 ## 🔮 À venir
 
 🚧 Des features en préparation, accrochons-nous :
@@ -205,3 +234,4 @@ Fais briller ton historique Git comme un pro 💎
 ## 🐛 Bugs ? Idées ?
 
 Ouvre une [issue](https://github.com/Tostenn/commitly-cli/issues) ou contacte-moi directement.
+Excellent 😄 ! Voici une section toute prête à intégrer au README, avec une **anecdote rigolote** et instructive sur l'évolution de l'outil, basée sur l’historique de commit du projet :
