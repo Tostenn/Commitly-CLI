@@ -18,7 +18,7 @@ commandes :
 
 from argparse import ArgumentParser
 from pathlib import Path
-from commity.commitly import Commitly, FORMAT_COMMIT, STYLE_COMMIT, RECOMMANDATION
+from commitly.commitly import Commitly, FORMAT_COMMIT, STYLE_COMMIT, RECOMMANDATION
 from rich import print
 
 
@@ -81,7 +81,7 @@ if options.add:
             if recommandation_commit and recommandation_commit.exists():
                 recommandation_commit = recommandation_commit.read_text().replace("ÿþ", "")
             
-            msg = commitly.msg_commit(style_commit, format_commit, recommandation_commit)
+            msg = commitly.generate_commit_message(style_commit, format_commit, recommandation_commit)
         else :
             try:
                 with open(commitly.file_temp, "r", encoding="utf-8") as f:
@@ -91,7 +91,7 @@ if options.add:
                 exit()
         if msg:
             
-            save = commitly.save_msg_in_file(msg)
+            save = commitly.save_message_to_file(msg)
             if not save:
                 print("Error saving commit message.")
                 exit()
@@ -104,7 +104,7 @@ if options.add:
                     if options.del_temp:
                         commitly.file_temp.unlink()
                     
-                    if add != '!': commitly.reset(add)
+                    if add != '!': commitly.unstage(add)
                     print("Commit cancelled.")
                     exit()
                     

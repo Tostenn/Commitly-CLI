@@ -1,12 +1,12 @@
-from commity.commitly import Commitly
+from commitly.commitly import Commitly
 
 commitly = Commitly()
 
 commitly.add(".")
 
-msg = commitly.msg_commit()
+msg = commitly.generate_commit_message()
 print(msg)
 
-commitly.save_msg_in_file(msg)
+commitly.save_message_to_file(msg)
 
 commitly.commit()
