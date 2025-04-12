@@ -10,9 +10,9 @@ from logo import LOGO, VERSION
 # Initialize argument parser
 parser = ArgumentParser(description="Automatically generate a commit message based on the provided diff.")
 
-parser.add_argument("--add", type=str, help="Add a file to the commit", nargs="+", default=".") # ! pour ignorer le git add
-parser.add_argument("--format", type=str, help="Add a file of format commit")
-parser.add_argument("--style", type=str, help="Add a file of style commit")
+parser.add_argument("-a","--add", type=str, help="Add a file to the commit", nargs="+", default=".") # ! pour ignorer le git add
+parser.add_argument("-f","--format", type=str, help="Add a file of format commit")
+parser.add_argument("-s","--style", type=str, help="Add a file of style commit")
 parser.add_argument("-r","--recommandation", type=str, help="Add a file of style commit")
 parser.add_argument("-p", "--push", action="store_true", help="Push the commit to the remote repository")
 parser.add_argument("-t", "--ticket", type=str, help="Add a ticket number to the commit message")
