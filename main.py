@@ -22,7 +22,7 @@ from commitly.commitly import Commitly, FORMAT_COMMIT, STYLE_COMMIT, RECOMMANDAT
 from rich.prompt import Prompt
 from rich.console import Console
 from rich.panel import Panel
-from rich.text import Text
+from logo import LOGO, VERSION
 
 # Initialize argument parser
 parser = ArgumentParser(description="Automatically generate a commit message based on the provided diff.")
@@ -45,6 +45,15 @@ parser.add_argument("-c","--continue",dest="continues", action="store_true", hel
 options = parser.parse_args()
 
 console = Console()
+
+console.print(
+    Panel.fit(
+        console.render_str(LOGO),
+        subtitle="version " + VERSION,
+        border_style="bold black"
+    ),
+    justify="center"
+)
 
 if options.show_format or options.show_style or options.show_recommandation:
     if options.show_format:
