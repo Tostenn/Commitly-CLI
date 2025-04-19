@@ -72,15 +72,16 @@ class CommitlyCLI:
         if c.lower() == "r":
             if not recommandation_commit:
                 recommandation_commit = ""    
-            recommandation_commit += f'\nregenere voici le message que tu a generé :\n{m}'
+            recommandation_commit += f'\nregenere le message du commit, voici le message que tu a generé précédament :\n{m}'
+            
             self.commitly.unstage(".")
             self.commitly.add(", ".join(files))
+            
             return self.commitly.generate_commit_message(
                 style_commit=style_commit,
                 format_commit=format_commit,
                 recommandation_commit=recommandation_commit,
                 ticket=self.options.ticket,
-                fact=self.options.fact
             )
 
         if c.lower() != "y":
@@ -89,9 +90,37 @@ class CommitlyCLI:
             if self.options.add != '!':
                 self.commitly.unstage(', '.join(self.options.add))
             self.console.print("[bold red]❌  Commit message not comfirmed. [/bold red]")
-            exit()
+            return False
 
-        return m
+        return True
+
+    def process_commit(self, msg, files):
+        self._display_commit_and_files(msg, files)
+
+        if not self.commitly.save_message_to_file(msg):
+            self.console.print("[bold red]❌  Error saving commit message. [/bold red]")
+            return
+
+        if self.options.comfirm:
+            format_commit = self._load_file_content(self.options.format)
+            style_commit = self._load_file_content(self.options.style)
+            recommandation_commit = self._load_file_content(self.options.recommandation)
+            regen_msg = self. _confirm_message(msg, files, format_commit, style_commit, recommandation_commit)
+            if regen_msg == False:
+                return
+            if isinstance(regen_msg, dict):
+                return self.process_commit(regen_msg["commit"], regen_msg['files'])
+            
+        if self.options.fact:
+            self.commitly.unstage(".")
+            self.commitly.add(", ".join(files))
+
+        self.commitly.commit()
+        self.console.print("[green]✔️  Commit message committed.[/green]")
+
+        if self.options.push:
+            self.commitly.push()
+            self.console.print("[green]✔️  Commit message pushed.[/green]")
 
     def run(self):
         self._display_logo()
@@ -127,32 +156,12 @@ class CommitlyCLI:
                         msg = [msg]
 
                     self.console.print("[green]✔️  Commit message generated.[/green]")
+                    if len(msg) > 1 and self.options.fact:
+                        self.console.print("[bold cyan]🧩 Plusieurs commits proposés par factorisation :[/bold cyan]")
+                       
                     for _ in msg:
-                        m, files = _['commit'], _['files']
-                        self._display_commit_and_files(m, files)
-
-                        if not self.commitly.save_message_to_file(m):
-                            self.console.print("[bold red]❌  Error saving commit message. [/bold red]")
-                            continue
-
-                        if self.options.comfirm:
-                            format_commit = self._load_file_content(self.options.format)
-                            style_commit = self._load_file_content(self.options.style)
-                            recommandation_commit = self._load_file_content(self.options.recommandation)
-                            regen_msg = self._confirm_message(m, files, format_commit, style_commit, recommandation_commit)
-                            if regen_msg != m:
-                                return self.run()
-
-                        if self.options.fact:
-                            self.commitly.unstage(".")
-                            self.commitly.add(", ".join(files))
-
-                        self.commitly.commit()
-                        self.console.print("[green]✔️  Commit message committed.[/green]")
-
-                        if self.options.push:
-                            self.commitly.push()
-                            self.console.print("[green]✔️  Commit message pushed.[/green]")
+                        self.process_commit(_['commit'], _['files'])
+                        
                 else:
                     self.console.print("[bold red]❌  Error generating commit message. [/bold red]")
             else:
