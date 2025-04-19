@@ -97,7 +97,7 @@ class CommitlyCLI:
     def _commit_run(self, msg, files):
         msg_final = self._load_file_content(self.options.path_file_temp)
         if msg_final != msg:
-            self.console.print('[yellow]⚠️  message de commit modifier [/yellow], [green]nouveau message du commit [/green]')
+            self.console.print('[yellow]⚠️  Commit message has been modified[/yellow], [green]new commit message:[/green]')
             self._display_commit_and_files(msg_final, files)
         
         self.commitly.commit()
