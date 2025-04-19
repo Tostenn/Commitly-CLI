@@ -22,13 +22,13 @@ class CommitlyCLI:
         parser.add_argument("-a", "--add", type=str, help="Add a file to the commit", nargs="+", default=".")
         parser.add_argument("-f", "--format", type=str, help="Add a file of format commit")
         parser.add_argument("-s", "--style", type=str, help="Add a file of style commit")
-        parser.add_argument("-r", "--recommandation", type=str, help="Add a file of style commit")
+        parser.add_argument("-r", "--recommendation", type=str, help="Add a file of style commit")
         parser.add_argument("-p", "--push", action="store_true", help="Push the commit to the remote repository")
         parser.add_argument("-t", "--ticket", type=str, help="Add a ticket number to the commit message")
         parser.add_argument("--show-format", action="store_true", help="Show the format commit")
         parser.add_argument("--show-style", action="store_true", help="Show the style commit")
-        parser.add_argument("--show-recommandation", action="store_true", help="Show the recommandation commit")
-        parser.add_argument("--comfirm", action="store_true", help="Comfirm the message of the commit")
+        parser.add_argument("--show-recommendation", action="store_true", help="Show the recommendation commit")
+        parser.add_argument("--confirm", action="store_true", help="confirm the message of the commit")
         parser.add_argument("--fact", action="store_true", help="propose de factoriser le commit en plusieurs plus petits")
         parser.add_argument("--path-file-temp", help="Path of the temporary file", default="commit.txt")
         parser.add_argument("--del-temp", action="store_true", help="Delete the temporary file")
@@ -43,8 +43,8 @@ class CommitlyCLI:
             self.console.print(Panel.fit(self.console.render_str(FORMAT_COMMIT), title="Format commit"))
         if self.options.show_style:
             self.console.print(Panel.fit(self.console.render_str(STYLE_COMMIT), title="Style commit"))
-        if self.options.show_recommandation:
-            self.console.print(Panel.fit(self.console.render_str(RECOMMANDATION), title="Recommandation commit"))
+        if self.options.show_recommendation:
+            self.console.print(Panel.fit(self.console.render_str(RECOMMANDATION), title="recommendation commit"))
         exit()
 
     def _display_logo(self):
@@ -60,9 +60,9 @@ class CommitlyCLI:
             table.append(Panel(f"+ {len(files) - 3} more files", border_style="bold blue"))
         self.console.print(Columns(table, equal=False))
 
-    def _confirm_message(self, m, files, format_commit, style_commit, recommandation_commit):
+    def _confirm_message(self, m, files, format_commit, style_commit, recommendation_commit):
         c = Prompt.ask(
-            prompt="Comfirm the message of the commit ? ",
+            prompt="confirm the message of the commit ? ",
             default="y",
             show_default=True,
             show_choices=True,
@@ -70,9 +70,9 @@ class CommitlyCLI:
         )
 
         if c.lower() == "r":
-            if not recommandation_commit:
-                recommandation_commit = ""    
-            recommandation_commit += f'\nregenere le message du commit, voici le message que tu a generé précédament :\n{m}'
+            if not recommendation_commit:
+                recommendation_commit = ""    
+            recommendation_commit += f'\regenerate le message du commit, voici le message que tu a generé précédament :\n{m}'
             
             self.commitly.unstage(".")
             self.commitly.add(", ".join(files))
@@ -80,7 +80,7 @@ class CommitlyCLI:
             return self.commitly.generate_commit_message(
                 style_commit=style_commit,
                 format_commit=format_commit,
-                recommandation_commit=recommandation_commit,
+                recommandation_commit=recommendation_commit,
                 ticket=self.options.ticket,
             )
 
@@ -89,7 +89,7 @@ class CommitlyCLI:
                 Path(self.commitly.file_temp).unlink(missing_ok=True)
             if self.options.add != '!':
                 self.commitly.unstage(', '.join(self.options.add))
-            self.console.print("[bold red]❌  Commit message not comfirmed. [/bold red]")
+            self.console.print("[bold red]❌  Commit message not confirmed. [/bold red]")
             return False
 
         return True
@@ -110,11 +110,11 @@ class CommitlyCLI:
             self.console.print("[bold red]❌  Error saving commit message. [/bold red]")
             return
 
-        if self.options.comfirm:
+        if self.options.confirm:
             format_commit = self._load_file_content(self.options.format)
             style_commit = self._load_file_content(self.options.style)
-            recommandation_commit = self._load_file_content(self.options.recommandation)
-            regen_msg = self. _confirm_message(msg, files, format_commit, style_commit, recommandation_commit)
+            recommendation_commit = self._load_file_content(self.options.recommendation)
+            regen_msg = self. _confirm_message(msg, files, format_commit, style_commit, recommendation_commit)
             if regen_msg == False:
                 return
             if isinstance(regen_msg, dict):
@@ -133,7 +133,7 @@ class CommitlyCLI:
     def run(self):
         self._display_logo()
 
-        if self.options.show_format or self.options.show_style or self.options.show_recommandation:
+        if self.options.show_format or self.options.show_style or self.options.show_recommendation:
             self._show_panels()
 
         if self.options.add:
@@ -147,7 +147,7 @@ class CommitlyCLI:
                     msg = self.commitly.generate_commit_message(
                         style_commit=self._load_file_content(self.options.style),
                         format_commit=self._load_file_content(self.options.format),
-                        recommandation_commit=self._load_file_content(self.options.recommandation),
+                        recommandation_commit=self._load_file_content(self.options.recommendation),
                         ticket=self.options.ticket,
                         fact=self.options.fact
                     )
