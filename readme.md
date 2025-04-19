@@ -48,34 +48,37 @@ python main.py --help
 
 ## ✨ Fonctionnalités principales
 
-- Analyse automatique des changements (diffs)
-- Messages de commit adaptés à ton style et format
-- Ajout de numéros de tickets
-- Option `--confirm` avec fichier modifiable `commit.txt`
-- Intégration directe avec Git (`git add`, `git commit`, `git push`)
-- Sorties stylées avec [rich](https://github.com/Textualize/rich)
-- Et un joli logo, parce que pourquoi pas ? 😎
+- 🧠 Génération intelligente de messages de commit via IA
+- 🔍 Analyse automatique des changements (diffs Git)
+- 💅 Personnalisation du style, format et tonalité
+- 🏷️ Ajout automatique de numéros de tickets
+- ✅ Mode confirmation avec édition possible (`commit.txt`)
+- 🔄 Intégration directe avec Git (`git add`, `git commit`, `git push`)
+- 🎨 Affichage enrichi grâce à [Rich](https://github.com/Textualize/rich)
+- 🤖 Et un joli logo, parce que pourquoi pas ? 😎
 
 ---
 
 ## 🛠️ Utilisation basique
 
 ```bash
-commitly-cli --add . --comfirm
+commitly-cli --add . --confirm
 ```
 
 Cela :
-- ajoute tous les fichiers au staging
-- génère un message de commit via l’IA
-- affiche le message généré
-- crée un fichier `commit.txt` que tu peux modifier à la main si tu veux
-- te demande de confirmer avant de faire le commit
-### Avec un ticket0.0
+- Ajoute tous les fichiers au staging
+- Génère un message de commit via l’IA
+- Crée un fichier `commit.txt` modifiable à la main
+- Affiche le message et demande confirmation avant de valider le commit
+
+### Exemple avec un ticket
 
 ```bash
-python main.py --add . --comfirm --ticket #25
+commitly-cli --add . --confirm --ticket "#25"
 ```
-Ajoute automatiquement le ticket dans le message !
+
+> Ajoute automatiquement le ticket dans le message généré !
+
 
 ---
 
@@ -89,7 +92,7 @@ commitly-cli \
   --recommandation conseils.txt \
   --ticket #42 \
   --push \
-  --comfirm
+  --confirm
 ```
 
 👉 Ce que ça fait :
@@ -101,32 +104,42 @@ commitly-cli \
 
 
 ### Si tu veux peaufiner ton message
-Quand tu utilises `--comfirm`, un fichier `commit.txt` est créé dans le dossier courant.
+Quand tu utilises `--confirm`, un fichier `commit.txt` est créé dans le dossier courant.
 Tu peux l'éditer avant de confirmer. Ensuite, relance avec :
 ```bash
 python main.py --continue
 ```
+## 🧪 Nouveau : mode simulation (`--dry-run`) (à venir dans la prochaine version)
+
+Tu veux voir le message généré sans faire de commit ? Utilise :
+
+```bash
+commitly-cli --add . --ticket "#123" --dry-run
+```
+
+> Cela affiche le message généré sans l’enregistrer dans Git. Idéal pour tester ton format ou ton style.
 
 ---
 
-## 🔍 Options
+## 🔍 Options disponibles
 
 | Argument | Description |
 |----------|-------------|
-| `--add` | Fichiers à ajouter (par défaut `.`) |
-| `--format` | Fichier texte décrivant le format de commit souhaité |
-| `--style` | Fichier texte décrivant le style d’écriture |
-| `--recommandation` | Conseils personnalisés pour guider l’IA |
-| `--ticket` | Numéro de ticket (ex: `#12`) |
-| `-p` `--push` | Push automatique après le commit |
-| `--comfirm` | Demande confirmation + possibilité de modifier le message dans `commit.txt` |
-| `--continue` | Utilise le message présent dans `commit.txt` sans le régénérer |
+| `-a`, `--add` | Fichiers à ajouter (par défaut `.`) |
+| `-f`, `--format` | Fichier texte décrivant le format de commit souhaité |
+| `-s`, `--style` | Fichier texte définissant le ton d’écriture |
+| `-r`, `--recommandation` | Conseils ou consignes personnalisées pour guider l’IA |
+| `-t`, `--ticket` | Numéro de ticket à inclure dans le commit (ex : `#42`) |
+| `-p`, `--push` | Envoie les modifications (`git push`) après le commit |
+| `--confirm` | Active le mode interactif avec édition possible dans `commit.txt` |
+| `-c`, `--continue` | Utilise le contenu de `commit.txt` pour effectuer le commit |
+| `--dry-run` | Simule la génération du message sans faire de commit |
 | `--show-format` | Affiche le format par défaut |
 | `--show-style` | Affiche le style par défaut |
 | `--show-recommandation` | Affiche les recommandations par défaut |
 | `--del-temp` | Supprime `commit.txt` après usage |
 
-> 🤓 Petit hack : utilise `--add !` pour **ne pas faire de `git add` automatique**
+> 💡 Astuce : utilise `--add !` pour ne pas ajouter automatiquement de fichiers.
 
 ---
 
@@ -144,7 +157,7 @@ Tu peux adapter la génération à ton style de projet grâce aux fichiers :
 ### 🧹 Un petit fix rapide
 
 ```bash
-commitly-cli --add . --ticket "#123" --comfirm
+commitly-cli --add . --ticket "#123" --confirm
 ```
 
 > Ajoute tout, associe au ticket, te propose un message, tu confirmes. Boom 💥
@@ -160,7 +173,7 @@ commitly-cli --add . \
   --recommandation mon-cadre.txt \
   --ticket "#88" \
   --push \
-  --comfirm
+  --confirm
 ```
 
 > Tu veux une cohérence sur toute une base de commits ? Tu es servi 🍽️
@@ -182,7 +195,7 @@ git commit -m "```"
 ```
 
 Oui, tu lis bien : **trois backticks comme message de commit**.  
-Pourquoi ? Parce que dans les données d’exemple, on avait mis `"message de commit ici"`, et notre jeune padawan commitly l’a pris **au pied de la lettre** 🥲
+Pourquoi ? Parce que dans les données d’exemple, on avait mis `"message de commit ici"`, et notre jeune padawan commitly l’a pris **au pied de la lettre**
 
 Mais bon… c’était ses débuts ! Depuis, l’outil a appris, s’est amélioré, et maintenant il génère des messages de commit bien plus clairs, utiles, et même élégants.
 
@@ -212,7 +225,7 @@ C’est du **commit-inception**, et c’est beau 😎
 
 Ce projet repose sur :
 
-📦 [commitly](https://github.com/Tostenn/commitly) : une bibliothèque magique qui transforme ton `diff` en message clair grâce à l’IA. C’est le moteur, commitly-cli est juste le volant 🛞
+📦 [commitly](https://github.com/Tostenn/commitly) : une bibliothèque magique qui transforme ton `diff` en message clair grâce à l’IA. C’est le moteur, commitly-cli est juste le volant
 
 ---
 
