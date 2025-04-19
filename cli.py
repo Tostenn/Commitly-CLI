@@ -36,7 +36,7 @@ class CommitlyCLI:
         return parser
 
     def _load_file_content(self, path):
-        return Path(path).read_text().replace("ÿþ", "") if path and Path(path).exists() else None
+        return Path(path).read_text(encoding='utf-8').replace("ÿþ", "") if path and Path(path).exists() else None
 
     def _show_panels(self):
         if self.options.show_format:
@@ -94,6 +94,15 @@ class CommitlyCLI:
 
         return True
 
+    def _commit_run(self, msg, files):
+        msg_final = self._load_file_content(self.options.path_file_temp)
+        if msg_final != msg:
+            self.console.print('[yellow]⚠️  message de commit modifier [/yellow], [green]nouveau message du commit [/green]')
+            self._display_commit_and_files(msg_final, files)
+        
+        self.commitly.commit()
+        self.console.print("[green]✔️  Commit message committed.[/green]")
+
     def process_commit(self, msg, files):
         self._display_commit_and_files(msg, files)
 
@@ -115,8 +124,7 @@ class CommitlyCLI:
             self.commitly.unstage(".")
             self.commitly.add(", ".join(files))
 
-        self.commitly.commit()
-        self.console.print("[green]✔️  Commit message committed.[/green]")
+        self._commit_run(msg, files)
 
         if self.options.push:
             self.commitly.push()
