@@ -8,7 +8,6 @@ from rich.text import Text
 from rich.columns import Columns
 from logo import LOGO, VERSION
 
-
 class CommitlyCLI:
     def __init__(self):
         self.console = Console()
@@ -72,10 +71,10 @@ class CommitlyCLI:
         if c.lower() == "r":
             if not recommendation_commit:
                 recommendation_commit = ""    
-            recommendation_commit += f'\regenerate le message du commit, voici le message que tu a generé précédament :\n{m}'
+            recommendation_commit += f'\n\nPour regenerate le message du commit, voici le message que tu a generé précédament :\n{m}'
             
             self.commitly.unstage(".")
-            self.commitly.add(", ".join(files))
+            self.commitly.add(" ".join(files))
             
             return self.commitly.generate_commit_message(
                 style_commit=style_commit,
@@ -122,7 +121,7 @@ class CommitlyCLI:
             
         if self.options.fact:
             self.commitly.unstage(".")
-            self.commitly.add(", ".join(files))
+            self.commitly.add(" ".join(files))
 
         self._commit_run(msg, files)
 
